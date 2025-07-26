@@ -1,4 +1,3 @@
-// src/routes/contactRoutes.js
 const express = require('express');
 const { body, validationResult } = require('express-validator');
 
@@ -20,7 +19,7 @@ router.post(
     }
 
     const { phone_number } = req.body;
-    const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    const created_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
     const db = await pool.getConnection();
 
@@ -31,8 +30,8 @@ router.post(
       }
 
       const [result] = await db.execute(
-        'INSERT INTO contacts (phone_number, timestamp) VALUES (?, ?)',
-        [phone_number, timestamp]
+        'INSERT INTO contacts (phone_number, created_at) VALUES (?, ?)',
+        [phone_number, created_at]
       );
 
       res.status(201).json({ success: true, id: result.insertId });

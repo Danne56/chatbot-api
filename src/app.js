@@ -1,4 +1,3 @@
-// src/app.js
 require('dotenv').config();
 const express = require('express');
 const helmet = require('helmet');
@@ -20,14 +19,17 @@ const app = express();
 app.use(helmet());
 app.use(compression());
 app.use(cors()); // Allow CORS for API access
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit: '2mb' }));
 
 // Rate Limiting
 app.use(rateLimiter);
 
 // Health check endpoint (no auth required)
 app.get('/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Secure Gateway API is running', timestamp: new Date().toISOString() });
+	res.json({
+			status: 'OK',
+			message: 'Secure API is running',
+	});
 });
 
 // API Routes (all protected by API key)
@@ -40,7 +42,7 @@ app.use('*', (req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
 
-// Error Handling (must be last)
+// Error Handling
 app.use(errorHandler);
 
 module.exports = app;

@@ -9,6 +9,11 @@ API_KEY="your-super-secret-api-key-here"
 echo "🧪 Testing Secure Gateway API..."
 echo "================================"
 
+# Test 0: Health check
+echo "0. Testing GET /health (no auth required)"
+curl -X GET "${API_BASE}/health" \
+  -w "\nStatus: %{http_code}\n\n"
+
 # Test 1: Create a contact
 echo "1. Testing POST /api/contacts"
 curl -X POST "${API_BASE}/api/contacts" \
@@ -45,14 +50,36 @@ curl -X GET "${API_BASE}/api/preferences/1" \
   -H "X-API-Key: ${API_KEY}" \
   -w "\nStatus: %{http_code}\n\n"
 
-# Test 6: Test authentication (should fail)
-echo "6. Testing authentication (should return 401)"
+# Test 6: Mark intro as sent
+echo "6. Testing POST /api/preferences/intro-sent"
+curl -X POST "${API_BASE}/api/preferences/intro-sent" \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: ${API_KEY}" \
+  -d '{"contact_id": 1}' \
+  -w "\nStatus: %{http_code}\n\n"
+
+# Test 7: Opt-out user
+echo "7. Testing POST /api/preferences/opt-out"
+curl -X POST "${API_BASE}/api/preferences/opt-out" \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: ${API_KEY}" \
+  -d '{"contact_id": 1}' \
+  -w "\nStatus: %{http_code}\n\n"
+
+# Test 8: Reset intro flags (admin operation)
+echo "8. Testing POST /api/preferences/reset-intro"
+curl -X POST "${API_BASE}/api/preferences/reset-intro" \
+  -H "X-API-Key: ${API_KEY}" \
+  -w "\nStatus: %{http_code}\n\n"
+
+# Test 9: Test authentication (should fail)
+echo "9. Testing authentication (should return 401)"
 curl -X GET "${API_BASE}/api/contacts/+1234567890" \
   -H "X-API-Key: wrong-key" \
   -w "\nStatus: %{http_code}\n\n"
 
-# Test 7: Test 404 route
-echo "7. Testing 404 route"
+# Test 10: Test 404 route
+echo "10. Testing 404 route"
 curl -X GET "${API_BASE}/api/nonexistent" \
   -H "X-API-Key: ${API_KEY}" \
   -w "\nStatus: %{http_code}\n\n"

@@ -126,7 +126,7 @@ npm start
 npm test
 
 # Or manually test
-curl http://localhost:3001/health
+curl http://localhost:5000/health
 ```
 
 ## 📋 Available Commands
@@ -166,7 +166,7 @@ curl http://localhost:3001/health
 ### 🔄 Server Status
 
 - **API Server**: ✅ Running on port 3001
-- **Health Check**: ✅ <http://localhost:3001/health> responds
+- **Health Check**: ✅ <http://localhost:5000/health> responds
 - **Database**: ⚠️ Needs MariaDB running (use `npm run db:up`)
 
 ## 🔧 Next Steps for Production
@@ -197,7 +197,7 @@ curl http://localhost:3001/health
 
 The API is fully compatible with n8n HTTP Request nodes:
 
-- **Base URL**: `http://localhost:3001`
+- **Base URL**: `http://localhost:5000`
 - **Authentication**: Add `X-API-Key` header
 - **Content-Type**: `application/json` for POST requests
 - **Endpoints**: All documented in `API_DOCS.md`
