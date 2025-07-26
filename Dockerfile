@@ -1,20 +1,18 @@
-# Base image
-FROM node:20-alpine
-
-# Create app directory
-WORKDIR /usr/src/app
-
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# Base Stage
+FROM node:20-alpine AS base
+WORKDIR /app
 COPY package*.json ./
 
-# Install app dependencies
-RUN npm install --production
-
-# Bundle app source
+# Development Stage
+FROM base AS development
+RUN npm install
 COPY . .
-
-# Start the server using the production build
-CMD [ "node", "server.js" ]
-
-# Exposing server port
 EXPOSE 3001
+CMD ["npm", "run", "dev"]
+
+# Production Stage
+FROM base AS production
+RUN npm install --omit=dev
+COPY . .
+EXPOSE 3001
+CMD ["npm", "start"]

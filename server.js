@@ -1,7 +1,7 @@
 const app = require('./src/app');
 const pool = require('./src/utils/db');
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3001;
 
 // Test database connection on startup
 async function startServer() {

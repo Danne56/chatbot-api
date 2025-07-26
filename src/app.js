@@ -26,10 +26,7 @@ app.use(rateLimiter);
 
 // Health check endpoint (no auth required)
 app.get('/health', (req, res) => {
-	res.json({
-			status: 'OK',
-			message: 'Secure API is running',
-	});
+  res.status(200).json({ status: 'OK', message: 'Server is up and running' });
 });
 
 // API Routes (all protected by API key)
