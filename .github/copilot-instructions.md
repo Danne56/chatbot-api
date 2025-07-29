@@ -134,7 +134,7 @@ DB_CONNECTION_LIMIT=5
 
 API_KEY=your-super-secret-api-key-here
 
-PORT=3001
+PORT=5000
 NODE_ENV=production
 ```
 
@@ -151,7 +151,7 @@ NODE_ENV=production
 ## n8n Integration Guide
 
 - Use the **HTTP Request** node
-- Set method (`GET`, `POST`, etc.) and URL (e.g., `http://api:3001/api/chatlogs`)
+- Set method (`GET`, `POST`, etc.) and URL (e.g., `http://api:5000/api/chatlogs`)
 - Add header: `X-API-Key: your-api-key`
 - Send data in JSON body
 - Handle `4xx/5xx` responses appropriately

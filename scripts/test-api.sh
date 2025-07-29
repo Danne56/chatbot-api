@@ -13,7 +13,7 @@
 # - All subsequent tests use the extracted string ID instead of hardcoded integers
 # - Added validation tests to ensure nanoid generation is working correctly
 
-API_BASE="http://localhost:3001"
+API_BASE="http://localhost:5000"
 API_KEY="your-super-secret-api-key-here"
 
 echo "🧪 Testing Secure Gateway API..."

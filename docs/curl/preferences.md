@@ -8,7 +8,7 @@ Replace `YOUR_API_KEY` with your actual API key and `YOUR_CONTACT_ID` with a val
 
 ```bash
 curl -X POST \
-  http://localhost:3000/api/preferences/opt-in \
+  http://localhost:5000/api/preferences/opt-in \
   -H 'Content-Type: application/json' \
   -H 'x-api-key: YOUR_API_KEY' \
   -d '{
@@ -20,7 +20,7 @@ curl -X POST \
 
 ```bash
 curl -X POST \
-  http://localhost:3000/api/preferences/opt-out \
+  http://localhost:5000/api/preferences/opt-out \
   -H 'Content-Type: application/json' \
   -H 'x-api-key: YOUR_API_KEY' \
   -d '{
@@ -32,7 +32,7 @@ curl -X POST \
 
 ```bash
 curl -X POST \
-  http://localhost:3000/api/preferences/intro-sent \
+  http://localhost:5000/api/preferences/intro-sent \
   -H 'Content-Type: application/json' \
   -H 'x-api-key: YOUR_API_KEY' \
   -d '{
@@ -44,7 +44,7 @@ curl -X POST \
 
 ```bash
 curl -X POST \
-  http://localhost:3000/api/preferences/reset \
+  http://localhost:5000/api/preferences/reset \
   -H 'x-api-key: YOUR_API_KEY'
 ```
 
@@ -52,6 +52,6 @@ curl -X POST \
 
 ```bash
 curl -X GET \
-  http://localhost:3000/api/preferences/YOUR_CONTACT_ID \
+  http://localhost:5000/api/preferences/YOUR_CONTACT_ID \
   -H 'x-api-key: YOUR_API_KEY'
 ```

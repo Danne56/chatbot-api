@@ -31,7 +31,7 @@ DB_CONNECTION_LIMIT=5
 
 API_KEY=your-super-secret-api-key-here
 
-PORT=3000
+PORT=5000
 NODE_ENV=production
 ```
 
@@ -428,7 +428,7 @@ module.exports = router;
 const app = require('./src/app');
 const pool = require('./src/utils/db');
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 // Graceful Shutdown
 let server;
@@ -506,7 +506,7 @@ npm install --save-dev nodemon
 ### ✅ Create Contact
 
 - **Method**: `POST`
-- **URL**: `http://api:3000/api/contacts`
+- **URL**: `http://api:5000/api/contacts`
 - **Headers**: `X-API-Key: your-key`, `Content-Type: application/json`
 - **Body**:
 
@@ -517,7 +517,7 @@ npm install --save-dev nodemon
 ### ✅ Log Message
 
 - **Method**: `POST`
-- **URL**: `http://api:3000/api/messages`
+- **URL**: `http://api:5000/api/messages`
 - **Body**:
 
 ```json
@@ -531,7 +531,7 @@ npm install --save-dev nodemon
 ### ✅ Opt-In User
 
 - **Method**: `POST`
-- **URL**: `http://api:3000/api/preferences/opt-in`
+- **URL**: `http://api:5000/api/preferences/opt-in`
 - **Body**:
 
 ```json

@@ -10,7 +10,7 @@ Creates a new contact or returns the existing one if the phone number is already
 
 ```bash
 curl -X POST \
-  http://localhost:3000/api/contacts \
+  http://localhost:5000/api/contacts \
   -H 'Content-Type: application/json' \
   -H 'x-api-key: YOUR_API_KEY' \
   -d '{
@@ -24,6 +24,6 @@ Retrieves a contact's details by their phone number. Replace `+1234567890` with 
 
 ```bash
 curl -X GET \
-  http://localhost:3000/api/contacts/+1234567890 \
+  http://localhost:5000/api/contacts/+1234567890 \
   -H 'x-api-key: YOUR_API_KEY'
 ```

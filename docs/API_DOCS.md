@@ -325,7 +325,7 @@ Retrieve user preference settings.
 ### HTTP Request Node Configuration
 
 1. **Method:** Select appropriate HTTP method (GET, POST, etc.)
-2. **URL:** `http://your-api-host:3001/api/endpoint`
+2. **URL:** `http://your-api-host:5000/api/endpoint`
 3. **Headers:**
    - `X-API-Key`: `your-api-key-here`
    - `Content-Type`: `application/json` (for POST requests)
@@ -339,7 +339,7 @@ Retrieve user preference settings.
    - Body: `{"phone_number": "{{$json.phone}}"}`
 
 2. **Log Message**
-   - HTTP Request Node  
+   - HTTP Request Node
    - POST `/api/messages`
    - Body: `{"contact_id": {{$json.contact_id}}, "message_in": "{{$json.message}}", "message_out": "{{$json.response}}"}`
 

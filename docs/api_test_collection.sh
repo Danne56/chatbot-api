@@ -9,7 +9,7 @@
 # ./api_test_collection.sh
 
 # --- Variables ---
-BASE_URL="http://localhost:3000/api"
+BASE_URL="http://localhost:5000/api"
 PHONE_NUMBER="1234567890"
 CONTACT_ID=1
 

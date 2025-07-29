@@ -10,7 +10,7 @@ Logs an incoming and/or outgoing message for a given contact.
 
 ```bash
 curl -X POST \
-  http://localhost:3000/api/messages \
+  http://localhost:5000/api/messages \
   -H 'Content-Type: application/json' \
   -H 'x-api-key: YOUR_API_KEY' \
   -d '{

@@ -10,7 +10,7 @@ Your secure Express.js API gateway is fully implemented and ready for production
 - **MariaDB Integration** - Secure database connection with pooling
 - **API Key Authentication** - All endpoints protected
 - **Input Validation** - express-validator for all inputs
-- **Rate Limiting** - 100 requests per IP per 15 minutes  
+- **Rate Limiting** - 100 requests per IP per 15 minutes
 - **Security Headers** - Helmet.js for secure HTTP headers
 - **Error Handling** - Comprehensive error management
 - **Graceful Shutdown** - Proper cleanup on server termination
@@ -57,7 +57,7 @@ Your secure Express.js API gateway is fully implemented and ready for production
 - `POST /api/contacts` - Create or retrieve contact
 - `GET /api/contacts/:phone_number` - Get contact by phone
 
-#### Messages  
+#### Messages
 
 - `POST /api/messages` - Log incoming/outgoing messages
 
@@ -148,7 +148,7 @@ curl http://localhost:5000/health
 ### ✅ Completed
 
 - [x] Project structure created
-- [x] All dependencies installed and configured  
+- [x] All dependencies installed and configured
 - [x] Database connection pool implemented
 - [x] Authentication middleware working
 - [x] Rate limiting configured
@@ -165,7 +165,7 @@ curl http://localhost:5000/health
 
 ### 🔄 Server Status
 
-- **API Server**: ✅ Running on port 3001
+- **API Server**: ✅ Running on port 5000
 - **Health Check**: ✅ <http://localhost:5000/health> responds
 - **Database**: ⚠️ Needs MariaDB running (use `npm run db:up`)
 

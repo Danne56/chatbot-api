@@ -61,7 +61,7 @@ Follow these steps to get the API up and running on your local machine.
     API_KEY=generate-a-super-secret-key-here
 
     # Server Settings
-    PORT=3001
+    PORT=5000
     NODE_ENV=development
     ```
 
@@ -87,7 +87,7 @@ npm install
 npm run dev
 ```
 
-The API will now be running at `http://localhost:3001`.
+The API will now be running at `http://localhost:5000`.
 
 ## API Endpoints
 
@@ -110,7 +110,7 @@ X-API-Key: your-super-secret-key-here
 To use this API in your n8n workflows, use the **HTTP Request** node:
 
 - **Method**: `GET`, `POST`, etc.
-- **URL**: `http://your-api-host:3001/api/contacts` (or other endpoints)
+- **URL**: `http://your-api-host:5000/api/contacts` (or other endpoints)
 - **Authentication**: `Header Auth`
 - **Name**: `X-API-Key`
 - **Value**: Your secret API key
