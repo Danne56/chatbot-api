@@ -20,7 +20,8 @@ router.post(
     }
 
     const { phone_number } = req.body;
-    const id = nanoid(12); // Generate unique ID
+    const contact_id = nanoid(12); // Generate unique ID
+    const pref_id = nanoid(12); // Generate unique ID
     const created_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
     const db = await pool.getConnection();
@@ -33,12 +34,19 @@ router.post(
 
       await db.execute(
         'INSERT INTO contacts (id, phone_number, created_at) VALUES (?, ?, ?)',
-        [id, phone_number, created_at]
+        [contact_id, phone_number, created_at]
       );
 
-      res.status(201).json({ success: true, id });
+      await db.execute(
+        `INSERT INTO user_preferences
+        (id, contact_id, has_opted_in, awaiting_optin, intro_sent_today)
+        VALUES (?, ?, ?, ?, ?)`,
+        [pref_id, contact_id, 0, 1, 1]
+      );
+
+      res.status(201).json({ success: true, id: contact_id, existed: false });
     } catch (err) {
-      console.error('DB Error (contacts):', err);
+      console.error('DB Error (contacts insert):', err);
       res.status(500).json({ error: 'Failed to create contact' });
     } finally {
       db.release();
