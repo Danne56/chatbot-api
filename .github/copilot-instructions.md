@@ -31,7 +31,7 @@ The API follows RESTful principles and emphasizes **security**, **input validati
 - 🧼 Use parameterized queries only — no string concatenation
 - 🔑 Authenticate every request using API key
 - ⚖️ Keep it minimal — only implement what's needed for n8n integration
-- 🧩 Use `nanoid(10)` for generating unique IDs (e.g., record IDs)
+- 🧩 Use `nanoid(12)` for generating unique IDs (e.g., record IDs)
 
 ## Core Requirements
 
@@ -84,7 +84,7 @@ The API follows RESTful principles and emphasizes **security**, **input validati
 
 - Use `nanoid` to generate short, unique IDs
 - Install: `npm install nanoid`
-- Generate 10-character IDs: `nanoid(10)`
+- Generate 10-character IDs: `nanoid(12)`
 - Use for `id` fields when inserting new records
 
 ## Example Endpoint Pattern
@@ -103,7 +103,7 @@ app.post('/chatlogs',
     }
 
     const { message, userId } = req.body;
-    const id = nanoid(10); // Generate unique ID
+    const id = nanoid(12); // Generate unique ID
     const db = await pool.getConnection();
 
     try {
@@ -134,7 +134,7 @@ DB_CONNECTION_LIMIT=5
 
 API_KEY=your-super-secret-api-key-here
 
-PORT=3000
+PORT=3001
 NODE_ENV=production
 ```
 
@@ -146,12 +146,12 @@ NODE_ENV=production
 - 🚫 Do not allow dynamic table/column names from input
 - 📈 Use rate limiting to prevent abuse
 - 🧰 Log errors (console is fine for now), but never leak DB details
-- 🧩 Use `nanoid(10)` for ID generation — never rely on auto-increment if business logic needs stable IDs
+- 🧩 Use `nanoid(12)` for ID generation — never rely on auto-increment if business logic needs stable IDs
 
 ## n8n Integration Guide
 
 - Use the **HTTP Request** node
-- Set method (`GET`, `POST`, etc.) and URL (e.g., `http://api:3000/api/chatlogs`)
+- Set method (`GET`, `POST`, etc.) and URL (e.g., `http://api:3001/api/chatlogs`)
 - Add header: `X-API-Key: your-api-key`
 - Send data in JSON body
 - Handle `4xx/5xx` responses appropriately

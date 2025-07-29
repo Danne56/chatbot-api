@@ -27,4 +27,3 @@ curl -X GET \
   http://localhost:3000/api/contacts/+1234567890 \
   -H 'x-api-key: YOUR_API_KEY'
 ```
-

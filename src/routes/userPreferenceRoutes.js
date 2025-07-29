@@ -1,5 +1,6 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
+const { nanoid } = require('nanoid');
 
 const pool = require('../utils/db');
 
@@ -11,7 +12,7 @@ const router = express.Router();
  */
 router.post(
   '/opt-in',
-  body('contact_id').isInt({ min: 1 }),
+  body('contact_id').isString().trim().isLength({ min: 1, max: 12 }),
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -19,6 +20,7 @@ router.post(
     }
 
     const { contact_id } = req.body;
+    const id = nanoid(12); // Generate unique ID for user_preferences
     const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
     const db = await pool.getConnection();
@@ -32,14 +34,14 @@ router.post(
 
       // Upsert user preference
       await db.execute(`
-        INSERT INTO user_preferences (contact_id, has_opted_in, awaiting_optin, intro_sent_today, opted_in_at)
-        VALUES (?, 1, 0, 0, ?)
+        INSERT INTO user_preferences (id, contact_id, has_opted_in, awaiting_optin, intro_sent_today, opted_in_at)
+        VALUES (?, ?, 1, 0, 0, ?)
         ON DUPLICATE KEY UPDATE
           has_opted_in = 1,
           awaiting_optin = 0,
           opted_in_at = VALUES(opted_in_at),
           updated_at = CURRENT_TIMESTAMP
-      `, [contact_id, now]);
+      `, [id, contact_id, now]);
 
       res.status(200).json({ success: true });
     } catch (err) {
@@ -57,7 +59,7 @@ router.post(
  */
 router.post(
   '/opt-out',
-  body('contact_id').isInt({ min: 1 }),
+  body('contact_id').isString().trim().isLength({ min: 1, max: 12 }),
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -65,6 +67,7 @@ router.post(
     }
 
     const { contact_id } = req.body;
+    const id = nanoid(12); // Generate unique ID for user_preferences
     const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
     const db = await pool.getConnection();
@@ -76,14 +79,14 @@ router.post(
       }
 
       await db.execute(`
-        INSERT INTO user_preferences (contact_id, has_opted_in, awaiting_optin, intro_sent_today, opted_out_at)
-        VALUES (?, 0, 0, 0, ?)
+        INSERT INTO user_preferences (id, contact_id, has_opted_in, awaiting_optin, intro_sent_today, opted_out_at)
+        VALUES (?, ?, 0, 0, 0, ?)
         ON DUPLICATE KEY UPDATE
           has_opted_in = 0,
           awaiting_optin = 0,
           opted_out_at = VALUES(opted_out_at),
           updated_at = CURRENT_TIMESTAMP
-      `, [contact_id, now]);
+      `, [id, contact_id, now]);
 
       res.status(200).json({ success: true });
     } catch (err) {
@@ -123,7 +126,7 @@ router.get('/:contact_id', async (req, res) => {
  */
 router.post(
   '/intro-sent',
-  body('contact_id').isInt({ min: 1 }),
+  body('contact_id').isString().trim().isLength({ min: 1, max: 12 }),
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -131,6 +134,7 @@ router.post(
     }
 
     const { contact_id } = req.body;
+    const id = nanoid(12); // Generate unique ID for user_preferences
     const db = await pool.getConnection();
 
     try {
@@ -142,12 +146,12 @@ router.post(
 
       // Update intro_sent_today flag
       await db.execute(`
-        INSERT INTO user_preferences (contact_id, intro_sent_today)
-        VALUES (?, 1)
+        INSERT INTO user_preferences (id, contact_id, intro_sent_today)
+        VALUES (?, ?, 1)
         ON DUPLICATE KEY UPDATE
           intro_sent_today = 1,
           updated_at = CURRENT_TIMESTAMP
-      `, [contact_id]);
+      `, [id, contact_id]);
 
       res.status(200).json({ success: true });
     } catch (err) {

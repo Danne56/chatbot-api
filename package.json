@@ -12,13 +12,13 @@
     "db:logs": "docker compose logs -f mariadb"
   },
   "dependencies": {
-    "express": "^4.21.2",
-    "mysql2": "^3.14.2",
-    "helmet": "^8.1.0",
-    "cors": "^2.8.5",
     "compression": "^1.8.1",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
     "express-rate-limit": "^6.10.0",
     "express-validator": "^7.2.1",
+    "helmet": "^8.1.0",
+    "mysql2": "^3.14.2",
     "nanoid": "^5.1.5"
   },
   "devDependencies": {

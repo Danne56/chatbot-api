@@ -1,3 +1,7 @@
+-- database-setup.sql
+-- Database schema for the n8n SMS Application
+-- Using NanoID(12) for primary keys
+
 -- Create the database (if it doesn't exist) and use it
 CREATE DATABASE IF NOT EXISTS n8n CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 USE n8n;
@@ -5,7 +9,7 @@ USE n8n;
 -- Create contacts table
 -- Purpose: Stores unique phone numbers and their first encounter timestamp.
 CREATE TABLE IF NOT EXISTS contacts (
-  id INT AUTO_INCREMENT PRIMARY KEY,
+  id VARCHAR(12) PRIMARY KEY, -- NanoID(12), allow slight padding
   phone_number VARCHAR(20) UNIQUE NOT NULL,
   created_at DATETIME NOT NULL,
   INDEX idx_phone_number (phone_number)
@@ -14,11 +18,13 @@ CREATE TABLE IF NOT EXISTS contacts (
 -- Create message_logs table
 -- Purpose: Logs incoming and outgoing messages linked to a contact.
 CREATE TABLE IF NOT EXISTS message_logs (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  contact_id INT NOT NULL,
+  id VARCHAR(12) PRIMARY KEY, -- NanoID(12), allow slight padding
+  contact_id VARCHAR(12) NOT NULL, -- References contacts.id (NanoID)
   timestamp DATETIME NOT NULL,
   message_in TEXT NOT NULL,
   message_out TEXT NULL,
+  -- Assuming you might still want a creation timestamp for the log entry itself
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (contact_id) REFERENCES contacts(id) ON DELETE CASCADE ON UPDATE CASCADE,
   INDEX idx_contact_id (contact_id),
   INDEX idx_timestamp (timestamp)
@@ -27,11 +33,11 @@ CREATE TABLE IF NOT EXISTS message_logs (
 -- Create user_preferences table
 -- Purpose: Manages user consent status and daily introduction flag per contact.
 CREATE TABLE IF NOT EXISTS user_preferences (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  contact_id INT UNIQUE NOT NULL,
+  id VARCHAR(12) PRIMARY KEY, -- nanoid(12), allow slight padding
+  contact_id VARCHAR(12) UNIQUE NOT NULL, -- References contacts.id (NanoID), Unique per contact
   has_opted_in BOOLEAN DEFAULT FALSE,
-  awaiting_optin BOOLEAN DEFAULT TRUE, -- Changed default to match original schema logic
-  intro_sent_today BOOLEAN NOT NULL DEFAULT FALSE, -- Added for daily intro tracking
+  awaiting_optin BOOLEAN DEFAULT TRUE,
+  intro_sent_today BOOLEAN NOT NULL DEFAULT FALSE,
   opted_in_at DATETIME NULL,
   opted_out_at DATETIME NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

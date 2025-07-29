@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config( {quiet: true} );
 const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
@@ -35,7 +35,7 @@ app.use('/api/messages', authenticateApiKey, messageLogRoutes);
 app.use('/api/preferences', authenticateApiKey, userPreferenceRoutes);
 
 // 404 Handler
-app.use('*', (req, res) => {
+app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
 
