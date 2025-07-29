@@ -67,8 +67,8 @@ curl -X POST "${API_BASE}/api/preferences/opt-out" \
   -w "\nStatus: %{http_code}\n\n"
 
 # Test 8: Reset intro flags (admin operation)
-echo "8. Testing POST /api/preferences/reset-intro"
-curl -X POST "${API_BASE}/api/preferences/reset-intro" \
+echo "8. Testing POST /api/preferences/reset"
+curl -X POST "${API_BASE}/api/preferences/reset" \
   -H "X-API-Key: ${API_KEY}" \
   -w "\nStatus: %{http_code}\n\n"
 

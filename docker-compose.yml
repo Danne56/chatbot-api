@@ -17,6 +17,9 @@ services:
       target: ${NODE_ENV:-production}
     container_name: chatbot-api
     restart: unless-stopped
+    secrets:
+      - DB_ROOT_PWD
+      - MYSQL_PWD
     environment:
       - NODE_ENV=${NODE_ENV:-production}
       - PORT=3001
@@ -34,7 +37,7 @@ services:
 
   mariadb:
     image: jc21/mariadb-aria:latest
-    container_name: mariadb
+    container_name: chatbot-mariadb
     restart: unless-stopped
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     secrets:
@@ -48,8 +51,6 @@ services:
       - MARIADB_AUTO_UPGRADE="1"
       - TZ=Asia/Jakarta
     volumes:
-      - mariadb-data:/var/lib/mysql
-      # - ./conf.d:/etc/my.cnf.d
       - ./src/db/database-setup.sql:/docker-entrypoint-initdb.d/database-setup.sql
     ports:
       - 3306:3306

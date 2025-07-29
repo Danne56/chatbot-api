@@ -1,0 +1,252 @@
+openapi: 3.0.0
+info:
+  title: Chatbot API
+  description: API for managing chatbot contacts, messages, and user preferences.
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000/api
+    description: Local development server
+
+security:
+  - ApiKeyAuth: []
+
+paths:
+  /contacts:
+    post:
+      summary: Create a new contact
+      description: Creates a new contact or returns the existing one if the phone number is already registered.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactRequest'
+      responses:
+        '201':
+          description: Contact created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactCreationResponse'
+        '200':
+          description: Contact already existed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactCreationResponse'
+        '400':
+          description: Invalid input.
+        '500':
+          description: Server error.
+
+  /contacts/{phone_number}:
+    get:
+      summary: Get contact by phone number
+      parameters:
+        - name: phone_number
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contact'
+        '404':
+          description: Contact not found.
+        '500':
+          description: Server error.
+
+  /messages:
+    post:
+      summary: Log a message
+      description: Logs an incoming and/or outgoing message for a given contact.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageLogRequest'
+      responses:
+        '201':
+          description: Message logged successfully.
+        '400':
+          description: Invalid input or contact not found.
+        '500':
+          description: Server error.
+
+  /preferences/opt-in:
+    post:
+      summary: Opt-in a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PreferenceRequest'
+      responses:
+        '200':
+          description: User opted-in successfully.
+        '400':
+          description: Invalid contact ID.
+        '500':
+          description: Server error.
+
+  /preferences/opt-out:
+    post:
+      summary: Opt-out a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PreferenceRequest'
+      responses:
+        '200':
+          description: User opted-out successfully.
+        '400':
+          description: Invalid contact ID.
+        '500':
+          description: Server error.
+
+  /preferences/intro-sent:
+    post:
+      summary: Mark intro as sent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PreferenceRequest'
+      responses:
+        '200':
+          description: Intro status updated.
+        '400':
+          description: Invalid contact ID.
+        '500':
+          description: Server error.
+
+  
+
+  /preferences/reset:
+    post:
+      summary: Reset all intro flags
+      description: Resets the 'intro_sent_today' flag for all users. Typically run on a daily schedule.
+      responses:
+        '200':
+          description: Flags reset successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResetResponse'
+        '500':
+          description: Server error.
+
+  /preferences/{contact_id}:
+    get:
+      summary: Get user preferences
+      parameters:
+        - name: contact_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPreference'
+        '404':
+          description: Preferences not found.
+        '500':
+          description: Server error.
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+  schemas:
+    Contact:
+      type: object
+      properties:
+        id:
+          type: integer
+        phone_number:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+    ContactRequest:
+      type: object
+      required:
+        - phone_number
+      properties:
+        phone_number:
+          type: string
+          example: "1234567890"
+    ContactCreationResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        id:
+          type: integer
+        existed:
+          type: boolean
+    MessageLogRequest:
+      type: object
+      required:
+        - contact_id
+        - message_in
+      properties:
+        contact_id:
+          type: integer
+        message_in:
+          type: string
+        message_out:
+          type: string
+    PreferenceRequest:
+      type: object
+      required:
+        - contact_id
+      properties:
+        contact_id:
+          type: integer
+          example: 1
+    ResetResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: Reset intro flags for 10 users
+
+    UserPreference:
+      type: object
+      properties:
+        contact_id:
+          type: integer
+        has_opted_in:
+          type: integer
+        awaiting_optin:
+          type: integer
+        intro_sent_today:
+          type: integer
+        opted_in_at:
+          type: string
+          format: date-time
+        opted_out_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time

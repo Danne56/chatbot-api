@@ -160,7 +160,7 @@ router.post(
 );
 
 /**
- * POST /api/preferences/reset-intro
+ * POST /api/preferences/reset
  * Reset daily intro flags (typically called daily via cron)
  */
 router.post('/reset', async (req, res) => {
@@ -168,9 +168,9 @@ router.post('/reset', async (req, res) => {
 
   try {
     const [result] = await db.execute('UPDATE user_preferences SET intro_sent_today = 0');
-    res.status(200).json({ 
-      success: true, 
-      message: `Reset intro flags for ${result.affectedRows} users` 
+    res.status(200).json({
+      success: true,
+      message: `Reset intro flags for ${result.affectedRows} users`
     });
   } catch (err) {
     console.error('DB Error (reset intro):', err);
