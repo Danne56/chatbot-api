@@ -65,12 +65,11 @@ else
 fi
 
 # Test 4: Opt-in user (using extracted contact_id)
-echo "4. Testing POST /api/preferences/opt-in"
+echo "4. Testing PUT /api/preferences/opt-in"
 if [ -n "$CONTACT_ID" ]; then
-  curl -X POST "${API_BASE}/api/preferences/opt-in" \
+  curl -X PUT "${API_BASE}/api/preferences/opt-in/$CONTACT_ID" \
     -H "Content-Type: application/json" \
     -H "X-API-Key: ${API_KEY}" \
-    -d "{\"contact_id\": \"$CONTACT_ID\"}" \
     -w "\nStatus: %{http_code}\n\n"
 else
   echo "⚠️  Skipping test - no contact ID available"
@@ -89,12 +88,11 @@ else
 fi
 
 # Test 6: Mark intro as sent (using extracted contact_id)
-echo "6. Testing POST /api/preferences/intro-sent"
+echo "6. Testing PUT /api/preferences/intro-sent/:contact_id"
 if [ -n "$CONTACT_ID" ]; then
-  curl -X POST "${API_BASE}/api/preferences/intro-sent" \
+  curl -X PUT "${API_BASE}/api/preferences/intro-sent/$CONTACT_ID" \
     -H "Content-Type: application/json" \
     -H "X-API-Key: ${API_KEY}" \
-    -d "{\"contact_id\": \"$CONTACT_ID\"}" \
     -w "\nStatus: %{http_code}\n\n"
 else
   echo "⚠️  Skipping test - no contact ID available"
@@ -102,12 +100,11 @@ else
 fi
 
 # Test 7: Opt-out user (using extracted contact_id)
-echo "7. Testing POST /api/preferences/opt-out"
+echo "7. Testing PUT /api/preferences/opt-out"
 if [ -n "$CONTACT_ID" ]; then
-  curl -X POST "${API_BASE}/api/preferences/opt-out" \
+  curl -X PUT "${API_BASE}/api/preferences/opt-out/$CONTACT_ID" \
     -H "Content-Type: application/json" \
     -H "X-API-Key: ${API_KEY}" \
-    -d "{\"contact_id\": \"$CONTACT_ID\"}" \
     -w "\nStatus: %{http_code}\n\n"
 else
   echo "⚠️  Skipping test - no contact ID available"
