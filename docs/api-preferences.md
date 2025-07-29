@@ -2,7 +2,7 @@
 
 Endpoint ini digunakan untuk mengelola preferensi pengguna terkait opt-in/opt-out dan status intro harian.
 
-## POST /api/preferences/opt-in
+## PUT /api/preferences/:contact_id/opt-in
 
 Menandai pengguna sebagai opt-in (menyetujui untuk menerima pesan).
 
@@ -10,32 +10,24 @@ Menandai pengguna sebagai opt-in (menyetujui untuk menerima pesan).
 
 ```json
 {
-  "X-API-Key": "your-api-key",
-  "Content-Type": "application/json"
+  "X-API-Key": "your-api-key"
 }
 ```
 
-### Body
+### Parameters
 
-```json
-{
-  "contact_id": 123
-}
-```
-
-### Validation Rules
-
-- `contact_id`: Integer, minimal 1, wajib diisi
+- `contact_id` (path): ID kontak yang akan di-opt-in
 
 ### Response Success (200)
 
 ```json
 {
-  "success": true
+  "success": true,
+  "message": "Contact opted in successfully"
 }
 ```
 
-## POST /api/preferences/opt-out
+## PUT /api/preferences/:contact_id/opt-out
 
 Menandai pengguna sebagai opt-out (tidak ingin menerima pesan).
 
@@ -43,28 +35,20 @@ Menandai pengguna sebagai opt-out (tidak ingin menerima pesan).
 
 ```json
 {
-  "X-API-Key": "your-api-key",
-  "Content-Type": "application/json"
+  "X-API-Key": "your-api-key"
 }
 ```
 
-### Body
+### Parameters
 
-```json
-{
-  "contact_id": 123
-}
-```
-
-### Validation Rules
-
-- `contact_id`: Integer, minimal 1, wajib diisi
+- `contact_id` (path): ID kontak yang akan di-opt-out
 
 ### Response Success (200)
 
 ```json
 {
-  "success": true
+  "success": true,
+  "message": "Contact opted out successfully"
 }
 ```
 
@@ -88,8 +72,8 @@ Mendapatkan preferensi pengguna berdasarkan contact ID.
 
 ```json
 {
-  "id": 1,
-  "contact_id": 123,
+  "id": "pref_a1b2c3d4e5f6",
+  "contact_id": "a1b2c3d4e5f6",
   "has_opted_in": 1,
   "awaiting_optin": 0,
   "intro_sent_today": 0,
@@ -100,7 +84,7 @@ Mendapatkan preferensi pengguna berdasarkan contact ID.
 }
 ```
 
-## POST /api/preferences/intro-sent
+## PUT /api/preferences/:contact_id/intro-sent
 
 Menandai bahwa intro harian sudah dikirim ke pengguna.
 
@@ -108,28 +92,20 @@ Menandai bahwa intro harian sudah dikirim ke pengguna.
 
 ```json
 {
-  "X-API-Key": "your-api-key",
-  "Content-Type": "application/json"
+  "X-API-Key": "your-api-key"
 }
 ```
 
-### Body
+### Parameters
 
-```json
-{
-  "contact_id": 123
-}
-```
-
-### Validation Rules
-
-- `contact_id`: Integer, minimal 1, wajib diisi
+- `contact_id` (path): ID kontak yang telah dikirimi intro
 
 ### Response Success (200)
 
 ```json
 {
-  "success": true
+  "success": true,
+  "message": "Intro status updated successfully"
 }
 ```
 
@@ -141,8 +117,7 @@ Reset flag intro harian untuk semua pengguna (biasanya dipanggil via cron job se
 
 ```json
 {
-  "X-API-Key": "your-api-key",
-  "Content-Type": "application/json"
+  "X-API-Key": "your-api-key"
 }
 ```
 
@@ -169,22 +144,6 @@ Tidak ada body yang diperlukan.
 }
 ```
 
-### 400 Bad Request - Validation Error
-
-```json
-{
-  "errors": [
-    {
-      "type": "field",
-      "value": "abc",
-      "msg": "Invalid value",
-      "path": "contact_id",
-      "location": "body"
-    }
-  ]
-}
-```
-
 ### 401 Unauthorized
 
 ```json
@@ -197,7 +156,7 @@ Tidak ada body yang diperlukan.
 
 ```json
 {
-  "error": "Preferences not found"
+  "error": "Preferences not found for contact_id: a1b2c3d4e5f6"
 }
 ```
 
@@ -235,7 +194,7 @@ atau
 
 ## Database Behavior
 
-- Semua operasi POST menggunakan `INSERT ... ON DUPLICATE KEY UPDATE` untuk upsert data
+- Operasi PUT hanya akan memperbarui preferensi untuk kontak yang sudah ada. Jika preferensi belum ada, maka akan gagal.
 - Field `has_opted_in`: 1 untuk opt-in, 0 untuk opt-out
 - Field `awaiting_optin`: Reset ke 0 saat opt-in/opt-out
 - Field `intro_sent_today`: Flag untuk mencegah pengiriman intro berulang dalam satu hari

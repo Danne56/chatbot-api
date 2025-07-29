@@ -73,63 +73,71 @@ paths:
       responses:
         '201':
           description: Message logged successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageLogResponse'
         '400':
           description: Invalid input or contact not found.
         '500':
           description: Server error.
 
-  /preferences/opt-in:
-    post:
+  /preferences/{contact_id}/opt-in:
+    put:
       summary: Opt-in a user
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PreferenceRequest'
+      parameters:
+        - name: contact_id
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: User opted-in successfully.
         '400':
           description: Invalid contact ID.
+        '404':
+          description: Contact not found.
         '500':
           description: Server error.
 
-  /preferences/opt-out:
-    post:
+  /preferences/{contact_id}/opt-out:
+    put:
       summary: Opt-out a user
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PreferenceRequest'
+      parameters:
+        - name: contact_id
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: User opted-out successfully.
         '400':
           description: Invalid contact ID.
+        '404':
+          description: Contact not found.
         '500':
           description: Server error.
 
-  /preferences/intro-sent:
-    post:
+  /preferences/{contact_id}/intro-sent:
+    put:
       summary: Mark intro as sent
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PreferenceRequest'
+      parameters:
+        - name: contact_id
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: Intro status updated.
         '400':
           description: Invalid contact ID.
+        '404':
+          description: Contact not found.
         '500':
           description: Server error.
-
-
 
   /preferences/reset:
     post:
@@ -153,7 +161,7 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
+            type: string
       responses:
         '200':
           description: Successful response
@@ -177,7 +185,7 @@ components:
       type: object
       properties:
         id:
-          type: integer
+          type: string
         phone_number:
           type: string
         created_at:
@@ -196,8 +204,10 @@ components:
       properties:
         success:
           type: boolean
+        message:
+          type: string
         id:
-          type: integer
+          type: string
         existed:
           type: boolean
     MessageLogRequest:
@@ -207,19 +217,20 @@ components:
         - message_in
       properties:
         contact_id:
-          type: integer
+          type: string
         message_in:
           type: string
         message_out:
           type: string
-    PreferenceRequest:
+    MessageLogResponse:
       type: object
-      required:
-        - contact_id
       properties:
-        contact_id:
-          type: integer
-          example: 1
+        success:
+          type: boolean
+        message:
+          type: string
+        id:
+          type: string
     ResetResponse:
       type: object
       properties:
@@ -233,8 +244,10 @@ components:
     UserPreference:
       type: object
       properties:
+        id:
+          type: string
         contact_id:
-          type: integer
+          type: string
         has_opted_in:
           type: integer
         awaiting_optin:

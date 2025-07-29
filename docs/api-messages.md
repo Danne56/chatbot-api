@@ -19,7 +19,7 @@ Mencatat pesan masuk dari pengguna dan pesan keluar (response) dari chatbot.
 
 ```json
 {
-  "contact_id": 123,
+  "contact_id": "a1b2c3d4e5f6",
   "message_in": "Halo, saya butuh bantuan",
   "message_out": "Halo! Terima kasih telah menghubungi kami. Bagaimana saya bisa membantu Anda?"
 }
@@ -27,7 +27,7 @@ Mencatat pesan masuk dari pengguna dan pesan keluar (response) dari chatbot.
 
 ### Validation Rules
 
-- `contact_id`: Integer, minimal 1, wajib diisi
+- `contact_id`: String, wajib diisi
 - `message_in`: String, tidak boleh kosong, wajib diisi
 - `message_out`: String, opsional
 
@@ -35,7 +35,9 @@ Mencatat pesan masuk dari pengguna dan pesan keluar (response) dari chatbot.
 
 ```json
 {
-  "success": true
+  "success": true,
+  "message": "Message logged successfully",
+  "id": "msg_a1b2c3d4e5f67890"
 }
 ```
 

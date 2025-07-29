@@ -32,7 +32,8 @@ Membuat kontak baru atau mengembalikan kontak yang sudah ada jika nomor telepon 
 ```json
 {
   "success": true,
-  "id": 123
+  "message": "Contact created successfully",
+  "id": "a1b2c3d4e5f6"
 }
 ```
 
@@ -41,7 +42,8 @@ Membuat kontak baru atau mengembalikan kontak yang sudah ada jika nomor telepon 
 ```json
 {
   "success": true,
-  "id": 123,
+  "message": "Contact already exists",
+  "id": "a1b2c3d4e5f6",
   "existed": true
 }
 ```
@@ -66,7 +68,7 @@ Mendapatkan data kontak berdasarkan nomor telepon.
 
 ```json
 {
-  "id": 123,
+  "id": "a1b2c3d4e5f6",
   "phone_number": "081234567890",
   "created_at": "2025-01-20 10:30:45"
 }
