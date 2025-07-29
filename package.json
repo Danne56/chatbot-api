@@ -9,7 +9,8 @@
     "test": "./scripts/test-api.sh",
     "db:up": "docker compose up -d mariadb phpmyadmin",
     "db:down": "docker compose down",
-    "db:logs": "docker compose logs -f mariadb"
+    "db:logs": "docker compose logs -f mariadb",
+    "lint": "eslint ."
   },
   "dependencies": {
     "compression": "^1.8.1",
@@ -23,6 +24,8 @@
   },
   "devDependencies": {
     "dotenv": "^17.2.1",
+    "eslint": "^9.32.0",
+    "globals": "^16.3.0",
     "nodemon": "^3.1.10"
   }
 }
