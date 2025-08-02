@@ -1,104 +1,109 @@
 # Secure Gateway API
 
-**A lightweight, secure, and performant Express.js API designed to act as a robust intermediary between n8n workflows and a MariaDB database.**
+**A lightweight Express.js API gateway for secure n8n-to-MariaDB communication.**
 
-Say goodbye to risky direct database connections in your automation workflows. This gateway ensures that all data access is controlled, validated, and authenticated through a clean, modern API.
+This API acts as a secure intermediary between n8n workflows and a MariaDB database, eliminating the need for direct database connections in automation workflows.
 
 ## Key Features
 
-- **API Key Authentication**: All endpoints are protected. No key, no entry.
-- **Rate Limiting**: Prevents abuse with sensible request limits.
-- **Input Validation**: Sanitizes all incoming data to prevent injection attacks.
-- **Performance-Tuned**: Uses `helmet`, `cors`, and `compression` for a fast and secure experience.
-- **Efficient DB Pooling**: Manages database connections efficiently with `mysql2/promise`.
-- **Graceful Shutdown**: Ensures no requests or connections are dropped during restarts.
-- **Dockerized Environment**: Comes with a `docker-compose` setup for easy development.
-- **Clean Codebase**: A well-organized and easy-to-understand project structure.
+- **API Key Authentication**: All endpoints require valid authentication
+- **Rate Limiting**: Built-in protection against abuse
+- **Input Validation**: Comprehensive data sanitization and validation
+- **Security Headers**: Uses `helmet`, `cors`, and `compression`
+- **Connection Pooling**: Efficient MariaDB connection management
+- **Structured Logging**: JSON-based logging with `pino`
+- **Docker Support**: Complete containerized development environment
 
 ## Tech Stack
 
-- **Backend**: Node.js, Express.js
-- **Database**: MariaDB (via `mysql2` driver)
+- **Backend**: Node.js 20+, Express.js 5
+- **Database**: MariaDB (via `mysql2`)
 - **Security**: `helmet`, `express-rate-limit`, `express-validator`
-- **Development**: `nodemon`, `dotenv`, Docker
+- **Logging**: `pino` with pretty printing
+- **Development**: `nodemon`, ESLint, Prettier
 
 ## Getting Started
 
-Follow these steps to get the API up and running on your local machine.
+### Prerequisites
 
-### 1. Prerequisites
+- Node.js 20+ and npm
+- Docker and Docker Compose
 
-- [Node.js](https://nodejs.org/en/) (v18 or higher recommended)
-- [Docker](https://www.docker.com/get-started) and Docker Compose
+### Setup
 
-### 2. Clone & Configure
-
-1. **Clone the repository:**
+1. **Clone and configure**
 
    ```bash
-   git clone https://your-repository-url/secure-gateway-api.git
+   git clone <repository-url>
    cd secure-gateway-api
-   ```
-
-2. **Create your environment file:**
-   Copy the example file and fill in your details.
-
-   ```bash
    cp .env.example .env
    ```
 
-3. **Update `.env` with your credentials:**
+2. **Update `.env` with your settings**
 
    ```env
-   # Database Settings
+   # Database
    DB_HOST=localhost
-   DB_USER=your_db_user
-   DB_PASSWORD=your_db_password
-   DB_NAME=your_database_name
-   DB_CONNECTION_LIMIT=10
+   DB_USER=secure_user
+   DB_PASSWORD=strong_password
+   DB_NAME=n8n
 
    # API Security
-   API_KEY=generate-a-super-secret-key-here
+   API_KEY=your-super-secret-api-key
 
-   # Server Settings
+   # Server
    PORT=5000
    NODE_ENV=development
    ```
 
-   > **Security Note**: Use a strong, randomly generated string for `API_KEY`.
+3. **Start the database**
 
-### 3. Launch the Database
+   ```bash
+   npm run db:up
+   ```
 
-This command will start a MariaDB container in the background. The schema from `src/db/database-setup.sql` will be automatically applied.
+4. **Install dependencies and run**
 
-```bash
-npm run db:up
-```
+   ```bash
+   npm install
+   npm run dev
+   ```
 
-You can monitor the database logs with `npm run db:logs`.
-
-### 4. Install Dependencies & Run
-
-```bash
-# Install npm packages
-npm install
-
-# Start the server in development mode (with auto-reload)
-npm run dev
-```
-
-The API will now be running at `http://localhost:5000`.
+The API will be available at `http://localhost:5000`.
 
 ## API Endpoints
 
-All endpoints require an `X-API-Key` header for authentication.
+All endpoints require the `X-API-Key` header for authentication.
 
-### Example: Create a Contact
+### Contacts
+
+- `POST /api/contacts` - Create a new contact
+- `GET /api/contacts/:phone_number` - Get contact by phone number
+
+### Messages
+
+- `POST /api/messages` - Log a new message
+
+### User Preferences
+
+- `PUT /api/preferences/opt-in/:contact_id` - Mark user as opted-in
+- `PUT /api/preferences/opt-out/:contact_id` - Mark user as opted-out
+- `PUT /api/preferences/intro-sent/:contact_id` - Mark daily intro as sent
+- `GET /api/preferences/:contact_id` - Get user preferences
+- `POST /api/preferences/reset` - Reset daily intro flags
+
+### Health Check
+
+- `GET /health` - Server health status (no auth required)
+
+## Example Usage
+
+Create a contact:
 
 ```http
 POST /api/contacts
 Content-Type: application/json
-X-API-Key: your-super-secret-key-here
+X-API-Key: your-api-key
 
 {
   "phone_number": "+1234567890"
@@ -107,33 +112,51 @@ X-API-Key: your-super-secret-key-here
 
 ## n8n Integration
 
-To use this API in your n8n workflows, use the **HTTP Request** node:
+Use the **HTTP Request** node in n8n:
 
-- **Method**: `GET`, `POST`, etc.
-- **URL**: `http://your-api-host:5000/api/contacts` (or other endpoints)
-- **Authentication**: `Header Auth`
-- **Name**: `X-API-Key`
-- **Value**: Your secret API key
-- **Body Content Type**: `JSON`
-- **Body**: JSON data as required by the endpoint.
+- **URL**: `http://your-api-host:5000/api/contacts`
+- **Method**: `POST`, `GET`, etc.
+- **Authentication**: Header Auth
+  - **Name**: `X-API-Key`
+  - **Value**: Your API key
+- **Body**: JSON data as required
 
-This setup ensures your database credentials never leave your secure network.
+## Available Scripts
+
+```bash
+npm run dev          # Start development server
+npm run start        # Start production server
+npm test             # Run API tests
+npm run db:up        # Start MariaDB container
+npm run db:down      # Stop MariaDB container
+npm run db:logs      # View database logs
+npm run lint         # Run ESLint
+npm run format       # Format code with Prettier
+```
 
 ## Project Structure
 
-```bash
+```text
 /
-├── docker-compose.yml      # Docker setup for MariaDB
-├── Dockerfile              # Container definition for the API
-├── server.js               # Server entry point with graceful shutdown
-├── package.json            # Project dependencies and scripts
-├── .env.example            # Environment variable template
+├── docker-compose.yml          # Docker services configuration
+├── Dockerfile                  # Multi-stage container build
+├── server.js                   # Server entry point
 ├── src/
-│   ├── app.js              # Express app configuration and middleware
-│   ├── routes/             # API route definitions
-│   ├── middleware/         # Auth, validation, error handling, etc.
-│   ├── utils/db.js         # MariaDB connection pool
+│   ├── app.js                  # Express application setup
+│   ├── routes/                 # API route definitions
+│   │   ├── contactRoutes.js    # Contact management endpoints
+│   │   ├── messageLogRoutes.js # Message logging endpoints
+│   │   └── userPreferenceRoutes.js # User preference endpoints
+│   ├── middleware/             # Express middleware
+│   │   ├── auth.js             # API key authentication
+│   │   ├── errorHandler.js     # Error handling
+│   │   └── rateLimiter.js      # Rate limiting
+│   ├── utils/                  # Utilities
+│   │   ├── db.js               # Database connection pool
+│   │   ├── id-generator.js     # Unique ID generation
+│   │   └── logger.js           # Structured logging
 │   └── db/
-│       └── database-setup.sql # Initial database schema
-└── ...
+│       └── database-setup.sql  # Database schema
+├── docs/                       # API documentation
+└── scripts/                    # Development scripts
 ```
