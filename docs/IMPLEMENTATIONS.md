@@ -188,7 +188,9 @@ router.post(
     const db = await pool.getConnection();
 
     try {
-      const [existing] = await db.execute('SELECT id FROM contacts WHERE phone_number = ?', [phone_number]);
+      const [existing] = await db.execute('SELECT id FROM contacts WHERE phone_number = ?', [
+        phone_number,
+      ]);
       if (existing.length > 0) {
         return res.status(200).json({ success: true, id: existing[0].id, existed: true });
       }
@@ -217,7 +219,9 @@ router.get('/:phone_number', async (req, res) => {
   const db = await pool.getConnection();
 
   try {
-    const [rows] = await db.execute('SELECT * FROM contacts WHERE phone_number = ?', [phone_number]);
+    const [rows] = await db.execute('SELECT * FROM contacts WHERE phone_number = ?', [
+      phone_number,
+    ]);
     if (rows.length === 0) {
       return res.status(404).json({ error: 'Contact not found' });
     }
@@ -308,29 +312,27 @@ const router = express.Router();
  * POST /api/preferences/opt-in
  * Mark a user as opted-in and update timestamps
  */
-router.post(
-  '/opt-in',
-  body('contact_id').isInt({ min: 1 }),
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+router.post('/opt-in', body('contact_id').isInt({ min: 1 }), async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { contact_id } = req.body;
+  const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
+
+  const db = await pool.getConnection();
+
+  try {
+    // Verify contact exists
+    const [contact] = await db.execute('SELECT id FROM contacts WHERE id = ?', [contact_id]);
+    if (contact.length === 0) {
+      return res.status(400).json({ error: 'Invalid contact_id' });
     }
 
-    const { contact_id } = req.body;
-    const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
-
-    const db = await pool.getConnection();
-
-    try {
-      // Verify contact exists
-      const [contact] = await db.execute('SELECT id FROM contacts WHERE id = ?', [contact_id]);
-      if (contact.length === 0) {
-        return res.status(400).json({ error: 'Invalid contact_id' });
-      }
-
-      // Upsert user preference
-      await db.execute(`
+    // Upsert user preference
+    await db.execute(
+      `
         INSERT INTO user_preferences (contact_id, has_opted_in, awaiting_optin, opted_in_at)
         VALUES (?, 1, 0, ?)
         ON DUPLICATE KEY UPDATE
@@ -338,43 +340,42 @@ router.post(
           awaiting_optin = 0,
           opted_in_at = VALUES(opted_in_at),
           updated_at = ?
-      `, [contact_id, now, now]);
+      `,
+      [contact_id, now, now]
+    );
 
-      res.status(200).json({ success: true });
-    } catch (err) {
-      console.error('DB Error (preferences opt-in):', err);
-      res.status(500).json({ error: 'Failed to update preference' });
-    } finally {
-      db.release();
-    }
+    res.status(200).json({ success: true });
+  } catch (err) {
+    console.error('DB Error (preferences opt-in):', err);
+    res.status(500).json({ error: 'Failed to update preference' });
+  } finally {
+    db.release();
   }
-);
+});
 
 /**
  * POST /api/preferences/opt-out
  * Mark a user as opted-out
  */
-router.post(
-  '/opt-out',
-  body('contact_id').isInt({ min: 1 }),
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+router.post('/opt-out', body('contact_id').isInt({ min: 1 }), async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { contact_id } = req.body;
+  const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
+
+  const db = await pool.getConnection();
+
+  try {
+    const [contact] = await db.execute('SELECT id FROM contacts WHERE id = ?', [contact_id]);
+    if (contact.length === 0) {
+      return res.status(400).json({ error: 'Invalid contact_id' });
     }
 
-    const { contact_id } = req.body;
-    const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
-
-    const db = await pool.getConnection();
-
-    try {
-      const [contact] = await db.execute('SELECT id FROM contacts WHERE id = ?', [contact_id]);
-      if (contact.length === 0) {
-        return res.status(400).json({ error: 'Invalid contact_id' });
-      }
-
-      await db.execute(`
+    await db.execute(
+      `
         INSERT INTO user_preferences (contact_id, has_opted_in, awaiting_optin, opted_out_at)
         VALUES (?, 0, 0, ?)
         ON DUPLICATE KEY UPDATE
@@ -382,17 +383,18 @@ router.post(
           awaiting_optin = 0,
           opted_out_at = VALUES(opted_out_at),
           updated_at = ?
-      `, [contact_id, now, now]);
+      `,
+      [contact_id, now, now]
+    );
 
-      res.status(200).json({ success: true });
-    } catch (err) {
-      console.error('DB Error (preferences opt-out):', err);
-      res.status(500).json({ error: 'Failed to update preference' });
-    } finally {
-      db.release();
-    }
+    res.status(200).json({ success: true });
+  } catch (err) {
+    console.error('DB Error (preferences opt-out):', err);
+    res.status(500).json({ error: 'Failed to update preference' });
+  } finally {
+    db.release();
   }
-);
+});
 
 /**
  * GET /api/preferences/:contact_id
@@ -403,7 +405,9 @@ router.get('/:contact_id', async (req, res) => {
   const db = await pool.getConnection();
 
   try {
-    const [rows] = await db.execute('SELECT * FROM user_preferences WHERE contact_id = ?', [contact_id]);
+    const [rows] = await db.execute('SELECT * FROM user_preferences WHERE contact_id = ?', [
+      contact_id,
+    ]);
     if (rows.length === 0) {
       return res.status(404).json({ error: 'Preferences not found' });
     }
@@ -449,12 +453,12 @@ process.on('SIGTERM', () => {
   });
 });
 
-process.on('unhandledRejection', (err) => {
+process.on('unhandledRejection', err => {
   console.error('Unhandled Promise Rejection:', err);
   process.exit(1);
 });
 
-process.on('uncaughtException', (err) => {
+process.on('uncaughtException', err => {
   console.error('Uncaught Exception:', err);
   process.exit(1);
 });

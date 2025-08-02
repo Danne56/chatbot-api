@@ -35,37 +35,37 @@ Follow these steps to get the API up and running on your local machine.
 
 1. **Clone the repository:**
 
-    ```bash
-    git clone https://your-repository-url/secure-gateway-api.git
-    cd secure-gateway-api
-    ```
+   ```bash
+   git clone https://your-repository-url/secure-gateway-api.git
+   cd secure-gateway-api
+   ```
 
 2. **Create your environment file:**
-    Copy the example file and fill in your details.
+   Copy the example file and fill in your details.
 
-    ```bash
-    cp .env.example .env
-    ```
+   ```bash
+   cp .env.example .env
+   ```
 
 3. **Update `.env` with your credentials:**
 
-    ```env
-    # Database Settings
-    DB_HOST=localhost
-    DB_USER=your_db_user
-    DB_PASSWORD=your_db_password
-    DB_NAME=your_database_name
-    DB_CONNECTION_LIMIT=10
+   ```env
+   # Database Settings
+   DB_HOST=localhost
+   DB_USER=your_db_user
+   DB_PASSWORD=your_db_password
+   DB_NAME=your_database_name
+   DB_CONNECTION_LIMIT=10
 
-    # API Security
-    API_KEY=generate-a-super-secret-key-here
+   # API Security
+   API_KEY=generate-a-super-secret-key-here
 
-    # Server Settings
-    PORT=5000
-    NODE_ENV=development
-    ```
+   # Server Settings
+   PORT=5000
+   NODE_ENV=development
+   ```
 
-    > **Security Note**: Use a strong, randomly generated string for `API_KEY`.
+   > **Security Note**: Use a strong, randomly generated string for `API_KEY`.
 
 ### 3. Launch the Database
 

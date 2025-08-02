@@ -294,15 +294,15 @@ Retrieve user preference settings.
 
 ## Error Codes
 
-| Status Code | Description |
-|-------------|-------------|
-| 200 | Success |
-| 201 | Created |
-| 400 | Bad Request (validation error) |
-| 401 | Unauthorized (invalid API key) |
-| 404 | Not Found |
-| 429 | Too Many Requests (rate limit exceeded) |
-| 500 | Internal Server Error |
+| Status Code | Description                             |
+| ----------- | --------------------------------------- |
+| 200         | Success                                 |
+| 201         | Created                                 |
+| 400         | Bad Request (validation error)          |
+| 401         | Unauthorized (invalid API key)          |
+| 404         | Not Found                               |
+| 429         | Too Many Requests (rate limit exceeded) |
+| 500         | Internal Server Error                   |
 
 ---
 

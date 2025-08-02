@@ -10,7 +10,10 @@
     "db:up": "docker compose up -d mariadb phpmyadmin",
     "db:down": "docker compose down",
     "db:logs": "docker compose logs -f mariadb",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "compression": "^1.8.1",
@@ -23,9 +26,12 @@
     "nanoid": "^5.1.5"
   },
   "devDependencies": {
+    "@eslint/js": "^9.32.0",
+    "@eslint/markdown": "^7.1.0",
     "dotenv": "^17.2.1",
     "eslint": "^9.32.0",
-    "globals": "^16.3.0",
-    "nodemon": "^3.1.10"
+    "globals": "^15.15.0",
+    "nodemon": "^3.1.10",
+    "prettier": "^3.6.2"
   }
 }

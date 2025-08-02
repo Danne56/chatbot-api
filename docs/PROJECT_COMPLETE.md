@@ -131,17 +131,17 @@ curl http://localhost:5000/health
 
 ## 📋 Available Commands
 
-| Command | Description |
-|---------|-------------|
-| `npm start` | Start production server |
-| `npm run dev` | Start development server (nodemon) |
-| `npm run setup` | Complete automated setup |
-| `npm test` | Run API tests |
-| `npm run deploy` | Deploy to production (systemd) |
-| `npm run db:up` | Start MariaDB container |
-| `npm run db:down` | Stop MariaDB container |
-| `npm run db:logs` | View database logs |
-| `npm run logs` | View API server logs |
+| Command           | Description                        |
+| ----------------- | ---------------------------------- |
+| `npm start`       | Start production server            |
+| `npm run dev`     | Start development server (nodemon) |
+| `npm run setup`   | Complete automated setup           |
+| `npm test`        | Run API tests                      |
+| `npm run deploy`  | Deploy to production (systemd)     |
+| `npm run db:up`   | Start MariaDB container            |
+| `npm run db:down` | Stop MariaDB container             |
+| `npm run db:logs` | View database logs                 |
+| `npm run logs`    | View API server logs               |
 
 ## 🎯 Current Status
 

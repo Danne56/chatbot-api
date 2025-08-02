@@ -30,12 +30,12 @@ async function startServer() {
     });
   });
 
-  process.on('unhandledRejection', (err) => {
+  process.on('unhandledRejection', err => {
     console.error('Unhandled Promise Rejection:', err);
     process.exit(1);
   });
 
-  process.on('uncaughtException', (err) => {
+  process.on('uncaughtException', err => {
     console.error('Uncaught Exception:', err);
     process.exit(1);
   });

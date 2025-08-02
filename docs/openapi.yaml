@@ -36,8 +36,16 @@ paths:
                 $ref: '#/components/schemas/ContactCreationResponse'
         '400':
           description: Invalid input.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
         '500':
           description: Server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
   /contacts/{phone_number}:
     get:
@@ -48,17 +56,20 @@ paths:
           required: true
           schema:
             type: string
+            example: "+1234567890"
       responses:
         '200':
           description: Successful response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Contact'
-        '404':
-          description: Contact not found.
+                $ref: '#/components/schemas/ContactGetResponse'
         '500':
           description: Server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
   /messages:
     post:
@@ -79,70 +90,146 @@ paths:
                 $ref: '#/components/schemas/MessageLogResponse'
         '400':
           description: Invalid input or contact not found.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ValidationErrorResponse'
+                  - $ref: '#/components/schemas/ErrorResponse'
         '500':
           description: Server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
-  /preferences/{contact_id}/opt-in:
+  /preferences/opt-in/{contact_id}:
     put:
       summary: Opt-in a user
+      description: Mark a user as opted-in and update timestamps
       parameters:
         - name: contact_id
           in: path
           required: true
           schema:
             type: string
+            minLength: 10
+            maxLength: 12
+            example: "a1b2c3d4e5f6"
       responses:
         '200':
           description: User opted-in successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
         '400':
-          description: Invalid contact ID.
+          description: Invalid contact ID or contact not found.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ValidationErrorResponse'
+                  - $ref: '#/components/schemas/ErrorResponse'
         '404':
-          description: Contact not found.
+          description: User preference record not found for this contact.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '500':
           description: Server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
-  /preferences/{contact_id}/opt-out:
+  /preferences/opt-out/{contact_id}:
     put:
       summary: Opt-out a user
+      description: Mark a user as opted-out
       parameters:
         - name: contact_id
           in: path
           required: true
           schema:
             type: string
+            minLength: 10
+            maxLength: 12
+            example: "a1b2c3d4e5f6"
       responses:
         '200':
           description: User opted-out successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
         '400':
-          description: Invalid contact ID.
+          description: Invalid contact ID or contact not found.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ValidationErrorResponse'
+                  - $ref: '#/components/schemas/ErrorResponse'
         '404':
-          description: Contact not found.
+          description: User preference record not found for this contact.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '500':
           description: Server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
-  /preferences/{contact_id}/intro-sent:
+  /preferences/intro-sent/{contact_id}:
     put:
       summary: Mark intro as sent
+      description: Mark that daily intro has been sent to user
       parameters:
         - name: contact_id
           in: path
           required: true
           schema:
             type: string
+            minLength: 10
+            maxLength: 12
+            example: "a1b2c3d4e5f6"
       responses:
         '200':
           description: Intro status updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
         '400':
-          description: Invalid contact ID.
+          description: Invalid contact ID or contact not found.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ValidationErrorResponse'
+                  - $ref: '#/components/schemas/ErrorResponse'
         '404':
-          description: Contact not found.
+          description: User preference record not found for this contact.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '500':
           description: Server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
   /preferences/reset:
     post:
-      summary: Reset all intro flags
-      description: Resets the 'intro_sent_today' flag for all users. Typically run on a daily schedule.
+      summary: Reset all user preferences
+      description: Reset daily intro flags and user preferences (typically called daily via cron)
       responses:
         '200':
           description: Flags reset successfully.
@@ -152,16 +239,22 @@ paths:
                 $ref: '#/components/schemas/ResetResponse'
         '500':
           description: Server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
   /preferences/{contact_id}:
     get:
       summary: Get user preferences
+      description: Get user preferences by contact ID
       parameters:
         - name: contact_id
           in: path
           required: true
           schema:
             type: string
+            example: "a1b2c3d4e5f6"
       responses:
         '200':
           description: Successful response
@@ -171,8 +264,16 @@ paths:
                 $ref: '#/components/schemas/UserPreference'
         '404':
           description: Preferences not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '500':
           description: Server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
 components:
   securitySchemes:
@@ -186,11 +287,15 @@ components:
       properties:
         id:
           type: string
+          example: "a1b2c3d4e5f6"
         phone_number:
           type: string
+          example: "+1234567890"
         created_at:
           type: string
           format: date-time
+          example: "2025-01-20 10:30:45"
+
     ContactRequest:
       type: object
       required:
@@ -198,18 +303,35 @@ components:
       properties:
         phone_number:
           type: string
-          example: "1234567890"
+          minLength: 5
+          maxLength: 20
+          example: "+1234567890"
+
     ContactCreationResponse:
       type: object
       properties:
         success:
           type: boolean
-        message:
-          type: string
+          example: true
         id:
           type: string
+          example: "a1b2c3d4e5f6"
         existed:
           type: boolean
+          example: false
+
+    ContactGetResponse:
+      type: object
+      properties:
+        data:
+          oneOf:
+            - $ref: '#/components/schemas/Contact'
+            - type: "null"
+          example:
+            id: "a1b2c3d4e5f6"
+            phone_number: "+1234567890"
+            created_at: "2025-01-20 10:30:45"
+
     MessageLogRequest:
       type: object
       required:
@@ -218,19 +340,66 @@ components:
       properties:
         contact_id:
           type: string
+          minLength: 1
+          maxLength: 12
+          example: "a1b2c3d4e5f6"
         message_in:
           type: string
+          minLength: 1
+          example: "Hello, this is an incoming message"
         message_out:
           type: string
+          example: "This is an optional outgoing message"
+
     MessageLogResponse:
       type: object
       properties:
         success:
           type: boolean
-        message:
-          type: string
+          example: true
         id:
           type: string
+          example: "m1n2o3p4q5r6"
+
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "An error occurred"
+
+    ValidationErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+              value:
+                type: string
+              msg:
+                type: string
+              path:
+                type: string
+              location:
+                type: string
+          example:
+            - type: "field"
+              value: ""
+              msg: "Invalid value"
+              path: "phone_number"
+              location: "body"
+
     ResetResponse:
       type: object
       properties:
@@ -239,27 +408,36 @@ components:
           example: true
         message:
           type: string
-          example: Reset intro flags for 10 users
+          example: "Reset intro flags for 10 users"
 
     UserPreference:
       type: object
       properties:
         id:
           type: string
+          example: "p1r2e3f4s5t6"
         contact_id:
           type: string
+          example: "a1b2c3d4e5f6"
         has_opted_in:
           type: integer
+          example: 1
         awaiting_optin:
           type: integer
+          example: 0
         intro_sent_today:
           type: integer
+          example: 1
         opted_in_at:
           type: string
           format: date-time
+          example: "2025-01-20 10:30:45"
         opted_out_at:
           type: string
           format: date-time
+          nullable: true
+          example: null
         updated_at:
           type: string
           format: date-time
+          example: "2025-01-20 10:30:45"

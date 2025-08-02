@@ -25,13 +25,17 @@ router.put(
 
     try {
       // Verify contact exists
-      const [contact] = await db.execute('SELECT id FROM contacts WHERE id = ?', [contact_id]);
+      const [contact] = await db.execute(
+        'SELECT id FROM contacts WHERE id = ?',
+        [contact_id]
+      );
       if (contact.length === 0) {
         return res.status(400).json({ error: 'Contact not found' });
       }
 
       // Only perform UPDATE. This will affect 0 rows if no preference record exists.
-      const [result] = await db.execute(`
+      const [result] = await db.execute(
+        `
         UPDATE user_preferences
         SET
           has_opted_in = 1,
@@ -39,12 +43,16 @@ router.put(
           opted_in_at = ?,
           updated_at = CURRENT_TIMESTAMP
         WHERE contact_id = ?
-      `, [now, contact_id]);
+      `,
+        [now, contact_id]
+      );
 
       // Check if any row was actually updated
       if (result.affectedRows === 0) {
         // No existing preference record was found to update
-        return res.status(404).json({ error: 'User preference record not found for this contact' });
+        return res
+          .status(404)
+          .json({ error: 'User preference record not found for this contact' });
       }
 
       res.status(200).json({ success: true });
@@ -77,13 +85,17 @@ router.put(
 
     try {
       // Verify contact exists
-      const [contact] = await db.execute('SELECT id FROM contacts WHERE id = ?', [contact_id]);
+      const [contact] = await db.execute(
+        'SELECT id FROM contacts WHERE id = ?',
+        [contact_id]
+      );
       if (contact.length === 0) {
         return res.status(400).json({ error: 'Contact not found' });
       }
 
       // Only perform UPDATE. This will affect 0 rows if no preference record exists.
-      const [result] = await db.execute(`
+      const [result] = await db.execute(
+        `
         UPDATE user_preferences
         SET
           has_opted_in = 0,
@@ -91,12 +103,16 @@ router.put(
           opted_out_at = ?,
           updated_at = CURRENT_TIMESTAMP
         WHERE contact_id = ?
-      `, [now, contact_id]);
+      `,
+        [now, contact_id]
+      );
 
       // Check if any row was actually updated
       if (result.affectedRows === 0) {
-         // No existing preference record was found to update
-         return res.status(404).json({ error: 'User preference record not found for this contact' });
+        // No existing preference record was found to update
+        return res
+          .status(404)
+          .json({ error: 'User preference record not found for this contact' });
       }
 
       res.status(200).json({ success: true });
@@ -118,7 +134,10 @@ router.get('/:contact_id', async (req, res) => {
   const db = await pool.getConnection();
 
   try {
-    const [rows] = await db.execute('SELECT * FROM user_preferences WHERE contact_id = ?', [contact_id]);
+    const [rows] = await db.execute(
+      'SELECT * FROM user_preferences WHERE contact_id = ?',
+      [contact_id]
+    );
     if (rows.length === 0) {
       return res.status(404).json({ error: 'Preferences not found' });
     }
@@ -133,7 +152,7 @@ router.get('/:contact_id', async (req, res) => {
 });
 
 /**
- * POST /api/preferences/intro-sent
+ * PUT /api/preferences/intro-sent
  * Mark that daily intro has been sent to user
  */
 router.put(
@@ -150,24 +169,32 @@ router.put(
 
     try {
       // Verify contact exists
-      const [contact] = await db.execute('SELECT id FROM contacts WHERE id = ?', [contact_id]);
+      const [contact] = await db.execute(
+        'SELECT id FROM contacts WHERE id = ?',
+        [contact_id]
+      );
       if (contact.length === 0) {
         return res.status(400).json({ error: 'Contact not found' });
       }
 
       // Update intro_sent_today flag
-      const [result] = await db.execute(`
+      const [result] = await db.execute(
+        `
         UPDATE user_preferences
         SET
           intro_sent_today = 1,
           updated_at = CURRENT_TIMESTAMP
         WHERE contact_id = ?
-      `, [contact_id]);
+      `,
+        [contact_id]
+      );
 
       // Check if any row was actually updated
       if (result.affectedRows === 0) {
         // No existing preference record was found to update
-        return res.status(404).json({ error: 'User preference record not found for this contact' });
+        return res
+          .status(404)
+          .json({ error: 'User preference record not found for this contact' });
       }
 
       res.status(200).json({ success: true });
@@ -188,10 +215,12 @@ router.post('/reset', async (req, res) => {
   const db = await pool.getConnection();
 
   try {
-    const [result] = await db.execute('UPDATE user_preferences SET intro_sent_today = 0');
+    const [result] = await db.execute(
+      'UPDATE user_preferences SET has_opted_in = 0, awaiting_optin = 1, intro_sent_today = 0'
+    );
     res.status(200).json({
       success: true,
-      message: `Reset intro flags for ${result.affectedRows} users`
+      message: `Reset intro flags for ${result.affectedRows} users`,
     });
   } catch (err) {
     console.error('DB Error (reset intro):', err);

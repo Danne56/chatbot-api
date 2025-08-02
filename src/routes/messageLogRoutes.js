@@ -1,6 +1,6 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
-const { nanoid } = require('nanoid');
+const { generateId } = require('../utils/id-generator');
 
 const pool = require('../utils/db');
 
@@ -22,14 +22,17 @@ router.post(
     }
 
     const { contact_id, message_in, message_out } = req.body;
-    const id = nanoid(12); // Generate unique ID
+    const id = generateId(12); // Generate unique ID
     const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
     const db = await pool.getConnection();
 
     try {
       // Verify contact exists
-      const [contact] = await db.execute('SELECT id FROM contacts WHERE id = ?', [contact_id]);
+      const [contact] = await db.execute(
+        'SELECT id FROM contacts WHERE id = ?',
+        [contact_id]
+      );
       if (contact.length === 0) {
         return res.status(400).json({ error: 'Invalid contact_id' });
       }

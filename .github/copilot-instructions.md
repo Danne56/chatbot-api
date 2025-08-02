@@ -92,7 +92,8 @@ The API follows RESTful principles and emphasizes **security**, **input validati
 ### POST /api/chatlogs
 
 ```js
-app.post('/chatlogs',
+app.post(
+  '/chatlogs',
   authenticateApiKey,
   body('message').isString().trim().isLength({ min: 1, max: 1000 }),
   body('userId').isInt({ min: 1 }),
@@ -107,10 +108,11 @@ app.post('/chatlogs',
     const db = await pool.getConnection();
 
     try {
-      await db.execute(
-        'INSERT INTO chat_logs (id, message, user_id) VALUES (?, ?, ?)',
-        [id, message, userId]
-      );
+      await db.execute('INSERT INTO chat_logs (id, message, user_id) VALUES (?, ?, ?)', [
+        id,
+        message,
+        userId,
+      ]);
       res.status(201).json({ success: true, id });
     } catch (err) {
       console.error('DB Error:', err);
