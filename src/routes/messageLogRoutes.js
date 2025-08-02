@@ -1,6 +1,7 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
 const { generateId } = require('../utils/id-generator');
+const logger = require('../utils/logger');
 
 const pool = require('../utils/db');
 
@@ -42,9 +43,18 @@ router.post(
         [id, contact_id, timestamp, message_in, message_out || null]
       );
 
+      logger.info({
+        message: 'Message logged successfully',
+        messageId: id,
+        contactId: contact_id,
+      });
+
       res.status(201).json({ success: true, id });
     } catch (err) {
-      console.error('DB Error (message_logs):', err);
+      logger.error({
+        message: 'DB Error (message_logs)',
+        error: err.message,
+      });
       res.status(500).json({ error: 'Failed to log message' });
     } finally {
       db.release();

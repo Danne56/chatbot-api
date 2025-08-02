@@ -1,5 +1,7 @@
+const logger = require('../utils/logger');
+
 const errorHandler = (err, res) => {
-  console.error('API Error:', err.stack || err.message);
+  logger.error('API Error:', err.stack || err.message);
   res.status(500).json({ error: 'Internal server error' });
 };
 

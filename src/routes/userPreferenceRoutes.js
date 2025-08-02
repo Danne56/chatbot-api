@@ -1,5 +1,6 @@
 const express = require('express');
 const { validationResult, param } = require('express-validator');
+const logger = require('../utils/logger');
 
 const pool = require('../utils/db');
 
@@ -55,9 +56,17 @@ router.put(
           .json({ error: 'User preference record not found for this contact' });
       }
 
+      logger.info({
+        message: 'User opted in successfully',
+        contactId: contact_id,
+      });
+
       res.status(200).json({ success: true });
     } catch (err) {
-      console.error('DB Error (preferences opt-in):', err);
+      logger.error({
+        message: 'DB Error (preferences opt-in)',
+        error: err.message,
+      });
       res.status(500).json({ error: 'Failed to update preference' });
     } finally {
       db.release();
@@ -115,9 +124,17 @@ router.put(
           .json({ error: 'User preference record not found for this contact' });
       }
 
+      logger.info({
+        message: 'User opted out successfully',
+        contactId: contact_id,
+      });
+
       res.status(200).json({ success: true });
     } catch (err) {
-      console.error('DB Error (preferences opt-out):', err);
+      logger.error({
+        message: 'DB Error (preferences opt-out)',
+        error: err.message,
+      });
       res.status(500).json({ error: 'Failed to update preference' });
     } finally {
       db.release();
@@ -141,10 +158,14 @@ router.get('/:contact_id', async (req, res) => {
     if (rows.length === 0) {
       return res.status(404).json({ error: 'Preferences not found' });
     }
+
     // Returns all fields including 'id' (pref_id), contact_id, has_opted_in, etc.
     res.json(rows[0]);
   } catch (err) {
-    console.error('DB Error (get preferences):', err);
+    logger.error({
+      message: 'DB Error (get preferences)',
+      error: err.message,
+    });
     res.status(500).json({ error: 'Failed to fetch preferences' });
   } finally {
     db.release();
@@ -197,9 +218,16 @@ router.put(
           .json({ error: 'User preference record not found for this contact' });
       }
 
+      logger.info({
+        message: `Intro marked as sent for ${contact_id}`,
+      });
+
       res.status(200).json({ success: true });
     } catch (err) {
-      console.error('DB Error (intro sent):', err);
+      logger.error({
+        message: 'DB Error (intro sent)',
+        error: err.message,
+      });
       res.status(500).json({ error: 'Failed to update intro status' });
     } finally {
       db.release();
@@ -216,14 +244,25 @@ router.post('/reset', async (req, res) => {
 
   try {
     const [result] = await db.execute(
-      'UPDATE user_preferences SET has_opted_in = 0, awaiting_optin = 1, intro_sent_today = 0'
+      'UPDATE user_preferences SET has_opted_in = 0, awaiting_optin = 1, intro_sent_today = 0 WHERE intro_sent_today = 1'
     );
+
+    logger.warn({
+      message: 'Intro flags reset successfully',
+      affectedRows: result.affectedRows,
+    });
+
     res.status(200).json({
       success: true,
       message: `Reset intro flags for ${result.affectedRows} users`,
     });
   } catch (err) {
-    console.error('DB Error (reset intro):', err);
+    logger.error({
+      message: 'DB Error (reset intro)',
+      error: err.message,
+      userAgent: req.get('User-Agent'),
+      ip: req.ip,
+    });
     res.status(500).json({ error: 'Failed to reset intro flags' });
   } finally {
     db.release();

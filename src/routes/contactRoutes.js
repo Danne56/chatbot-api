@@ -1,6 +1,7 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
 const generateId = require('../utils/id-generator').generateId;
+const logger = require('../utils/logger');
 
 const pool = require('../utils/db');
 
@@ -49,9 +50,18 @@ router.post(
         [pref_id, contact_id, 0, 1, 1]
       );
 
+      logger.info({
+        message: 'Contact created successfully',
+        contactId: contact_id,
+        phoneNumber: phone_number,
+      });
+
       res.status(201).json({ success: true, id: contact_id, existed: false });
     } catch (err) {
-      console.error('DB Error (contacts insert):', err);
+      logger.error({
+        message: 'DB Error (contacts insert)',
+        error: err.message,
+      });
       res.status(500).json({ error: 'Failed to create contact' });
     } finally {
       db.release();
@@ -79,7 +89,10 @@ router.get('/:phone_number', async (req, res) => {
 
     res.status(200).json({ data: rows[0] });
   } catch (err) {
-    console.error('DB Error (get contact):', err);
+    logger.error({
+      message: 'DB Error (get contact)',
+      error: err.message,
+    });
     res.status(500).json({ error: 'Failed to fetch contact' });
   } finally {
     db.release();
