@@ -1,4 +1,4 @@
-# Secure Gateway API
+# Chatbot API
 
 **A lightweight Express.js API gateway for secure n8n-to-MariaDB communication.**
 

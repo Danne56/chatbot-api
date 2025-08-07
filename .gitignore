@@ -60,3 +60,4 @@ Thumbs.db
 .secrets
 .vscode/
 .mysql
+.github/copilot-instructions.md

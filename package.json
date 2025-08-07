@@ -1,7 +1,6 @@
 {
-  "name": "secure-gateway-api",
+  "name": "chatbot-api",
   "version": "1.0.0",
-  "description": "Secure API gateway for n8n to protect MariaDB access",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
