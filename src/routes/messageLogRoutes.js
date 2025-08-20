@@ -24,7 +24,6 @@ router.post(
 
     const { contact_id, message_in, message_out } = req.body;
     const id = generateId(12); // Generate unique ID
-    const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
     const db = await pool.getConnection();
 
@@ -39,8 +38,8 @@ router.post(
       }
 
       await db.execute(
-        'INSERT INTO message_logs (id, contact_id, timestamp, message_in, message_out) VALUES (?, ?, ?, ?, ?)',
-        [id, contact_id, timestamp, message_in, message_out || null]
+        'INSERT INTO message_logs (id, contact_id, message_in, message_out) VALUES (?, ?, ?, ?)',
+        [id, contact_id, message_in, message_out || null]
       );
 
       logger.info({

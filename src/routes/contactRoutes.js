@@ -23,7 +23,6 @@ router.post(
     const { phone_number } = req.body;
     const contact_id = generateId(12); // Generate unique ID
     const pref_id = generateId(12); // Generate unique ID
-    const created_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
     const db = await pool.getConnection();
 
@@ -39,8 +38,8 @@ router.post(
       }
 
       await db.execute(
-        'INSERT INTO contacts (id, phone_number, created_at) VALUES (?, ?, ?)',
-        [contact_id, phone_number, created_at]
+        'INSERT INTO contacts (id, phone_number) VALUES (?, ?)',
+        [contact_id, phone_number]
       );
 
       await db.execute(

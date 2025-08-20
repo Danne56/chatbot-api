@@ -11,7 +11,7 @@ USE n8n;
 CREATE TABLE IF NOT EXISTS contacts (
   id VARCHAR(12) PRIMARY KEY, -- NanoID(12), allow slight padding
   phone_number VARCHAR(20) UNIQUE NOT NULL,
-  created_at DATETIME NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   INDEX idx_phone_number (phone_number)
 );
 
@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS contacts (
 CREATE TABLE IF NOT EXISTS message_logs (
   id VARCHAR(12) PRIMARY KEY, -- NanoID(12), allow slight padding
   contact_id VARCHAR(12) NOT NULL, -- References contacts.id (NanoID)
-  timestamp DATETIME NOT NULL,
+  timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   message_in TEXT NOT NULL,
   message_out TEXT NULL,
   -- Assuming you might still want a creation timestamp for the log entry itself
@@ -38,8 +38,8 @@ CREATE TABLE IF NOT EXISTS user_preferences (
   has_opted_in BOOLEAN DEFAULT FALSE,
   awaiting_optin BOOLEAN DEFAULT TRUE,
   intro_sent_today BOOLEAN NOT NULL DEFAULT FALSE,
-  opted_in_at DATETIME NULL,
-  opted_out_at DATETIME NULL,
+  opted_in_at TIMESTAMP NULL,
+  opted_out_at TIMESTAMP NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (contact_id) REFERENCES contacts(id) ON DELETE CASCADE ON UPDATE CASCADE,

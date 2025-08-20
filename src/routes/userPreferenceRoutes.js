@@ -20,7 +20,6 @@ router.put(
     }
 
     const { contact_id } = req.params;
-    const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
     const db = await pool.getConnection();
 
@@ -41,11 +40,11 @@ router.put(
         SET
           has_opted_in = 1,
           awaiting_optin = 0,
-          opted_in_at = ?,
+          opted_in_at = CURRENT_TIMESTAMP,
           updated_at = CURRENT_TIMESTAMP
         WHERE contact_id = ?
       `,
-        [now, contact_id]
+        [contact_id]
       );
 
       // Check if any row was actually updated
@@ -88,7 +87,6 @@ router.put(
     }
 
     const { contact_id } = req.params;
-    const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
     const db = await pool.getConnection();
 
@@ -109,11 +107,11 @@ router.put(
         SET
           has_opted_in = 0,
           awaiting_optin = 0,
-          opted_out_at = ?,
+          opted_out_at = CURRENT_TIMESTAMP,
           updated_at = CURRENT_TIMESTAMP
         WHERE contact_id = ?
       `,
-        [now, contact_id]
+        [contact_id]
       );
 
       // Check if any row was actually updated
